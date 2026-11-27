@@ -1,10 +1,10 @@
 {
   "unit": "ep01",
   "version": "v1-fast25d",
-  "mode": "fast_25d",
+  "mode": "depth25d",
   "timeline": "audio/ep01.timeline.json",
   "audio": "audio/ep01.m4a",
-  "subtitles": "audio/ep01.srt",
+  "subtitles": "audio/subs-zh.json",
   "prepared_dir": "prepared/ep01",
   "out": "output/ep01-v1-fast25d.mp4",
   "bubble_mode": "cue_sync",
