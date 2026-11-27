@@ -23,13 +23,21 @@ compatibility: Core methodology, data contracts (references/), and contract vali
 
 ## 五阶段工作流与按需读取路由
 
+开工前先判定**素材源头模式（Mode A / B / C）**，按源头裁剪 L0 步骤（绝不对无字原创图或精修单格重复执行分格检测与去字修补）：
+
+- **Mode A（现成漫画原页改编）**：原图已合层含分格与气泡 → 走完整 L0 逆向拆层（超分 → 分格 → UI 保护 → 抠气泡 → 去字 → 深度）。
+- **Mode B（原创手绘 / 本地 AI 从零生成）**：源头按单镜直出纯净无字图（可带运镜余量与前背景透明分层）→ **直接跳过分格检测、气泡抠层与去字修补**，仅做深度估计（若走 2.5D）与轻量 `manifest.json` 打包，气泡改为正向叠加或纯字幕。
+- **Mode C（原作漫画大幅二次编辑 / 重构）**：先借用 L0 粗裁/粗去字作为底稿，经扩图（Outpaint）、重绘遮挡、上色、拆层或生成首尾双关键帧后，**按 Mode B 纯净单格回灌 `manifest.json`**（跳过二次自动去字，防止破坏精修画面）。
+
+> 三种模式在进入 L1 前均收敛为统一的 L0 `manifest.json` 契约，**L1 → L2 → L3 全链路 100% 复用**。细则见 [references/preprocessing-heuristics.md](references/preprocessing-heuristics.md)。
+
 按阶段推进，每通过一个阶段先核验检查点再进入下一阶段：
 
 ```text
-[Stage 0] 音频与真时间轴就绪（Audio Master + timeline.json + 可选字幕）
-    ↓ 检查点：音频可播、timeline 包含逐句人声与音效锚点
-[Stage 1] L0 静态漫画解析与拆层（分格 / 保护 UI / 抠气泡 / 去字 / 深度）
-    ↓ 检查点：每页生成 manifest.json + 调试预览图，核验无误擦 UI/漏分格
+[Stage 0] 音频与真时间轴就绪（Audio Master + timeline.json + 可选字幕）+ 判定素材源模式(Mode A/B/C)
+    ↓ 检查点：音频可播、timeline 包含逐句人声与音效锚点、L0 路径已裁剪
+[Stage 1] L0 资产准备（Mode A 完整拆层 / Mode B 源头纯净打包 / Mode C 精修回灌）
+    ↓ 检查点：产出标准 manifest.json + 调试预览，核验无误擦 UI/漏分格/重复修补
 [Stage 2] L1 声明式编排与对轴（page-map.json → story.json）
     ↓ 检查点：validate_story 零硬错、关键情绪/音效峰值落入目标分格、删减气泡已核对
 [Stage 3] L2 双轨渲染（先出 Fast 2.5D 基线；再按需生成 AI 片段并合出 Hybrid 版）

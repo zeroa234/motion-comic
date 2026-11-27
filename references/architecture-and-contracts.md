@@ -11,8 +11,11 @@ Audio Pipeline (外部音频域)
     └─ 产出：Audio Master + timeline.json + 可选字幕(.srt/.ass)
                                   │
                                   ▼
-L0 资产解析层 (Asset Parser)      ──▶ 产出：prepared/<page>/manifest.json + 分格静态资产
-        │ (只向下游暴露 manifest 契约)
+L0 资产入口层 (Asset Prep / Ingest)
+    ├─ Mode A：现成漫画原页 ──▶ 自动分格 / UI 保护 / 抠气泡 / 去字 / 深度
+    ├─ Mode B：原创手绘 / AI 直出 ──▶ 跳过分格与去字，直接纯净单格打包 (+ 深度/可选分层)
+    └─ Mode C：原作大幅二编 ──▶ 粗裁起稿 → 扩图/重绘/上色/关键帧 → 纯净单格回灌
+        │ (三种入口收敛为同一 manifest 契约：prepared/<unit>/manifest.json)
         ▼
 L1 导演编排层 (Director / Planner)──▶ 产出：story.json (+ 可选 AI 增强片段缓存)
         │ (只向下游暴露声明式 story 契约)
@@ -57,10 +60,11 @@ L3 质检审计层 (QC & Verifier)     ──▶ 产出：qc_report.json + qc_sh
 - **分格级（`panels[]`）**：
   - `id`（稳定分格 ID，如 `p01`）、`rect: [x0, y0, x1, y1]`（归一化页坐标）、`size: [pw, ph]`、`content_hash`、`dir`；
   - 目录下最小完备文件集：
-    - `orig.png`（未去字原分格图，用于 UI/聊天页兜底与人工对照）；
-    - `clean.png`（已去字补底分格图，作为 2.5D 与 AI 视频的标准底图）；
-    - `depth16.png`（16-bit 归一化深度图，避免 8-bit 量化阶梯伪影）；
-  - `bubbles[]`：按**分格内局部阅读序**排好序的气泡列表，每项含 `id`、`file`（透明底 PNG 相对路径）、`panel_norm: [x0, y0, x1, y1]`（分格内归一化坐标）。
+    - `orig.png`（未去字原分格图，用于 UI/聊天页兜底与人工对照；在 Mode B/C 纯净源头模式下可与 `clean.png` 同源）；
+    - `clean.png`（无字纯净底图，作为 2.5D 与 AI 视频的标准输入）；
+    - `depth16.png`（16-bit 归一化深度图，避免 8-bit 量化阶梯伪影；纯 `video_clip` 镜头或聊天页可填中性平深度）；
+    - 可选多层资产：`fg.png` / `bg.png`（透明前景与完整背景，Mode B 手绘直出或 Mode C 精修拆层可直接提供以获得无拉丝大视差）；
+  - `bubbles[]`：按**分格内局部阅读序**排好序的气泡列表（Mode B/C 纯字幕或无气泡镜头可为空数组 `[]`），每项含 `id`、`file`（透明底 PNG 相对路径，支持逆向抠图或正向排版导出）、`panel_norm: [x0, y0, x1, y1]`（分格内归一化坐标）。
 
 ### 3.3 L1 导演声明契约（`story.json`）
 `story.json` 是 L1 与 L2 的唯一沟通介质，**必须是纯声明式、可静态校验的 JSON**：
