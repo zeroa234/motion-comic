@@ -1,0 +1,69 @@
+{
+  "unit": "ep01",
+  "version": "v1-fast25d",
+  "mode": "fast_25d",
+  "timeline": "audio/ep01.timeline.json",
+  "audio": "audio/ep01.m4a",
+  "subtitles": "audio/ep01.srt",
+  "prepared_dir": "prepared/ep01",
+  "out": "output/ep01-v1-fast25d.mp4",
+  "bubble_mode": "cue_sync",
+  "fluid_style": "auto",
+  "canvas": {
+    "width": 1080,
+    "height": 1560,
+    "fps": 30,
+    "ssaa": 2
+  },
+  "encode": {
+    "codec": "h264_nvenc",
+    "cq": 22,
+    "maxrate": "7M",
+    "bufsize": "14M",
+    "audio_bitrate": "192k"
+  },
+  "window": {
+    "start": 0.0,
+    "end": { "anchor": "A:t1@4$", "offset": 0.8 }
+  },
+  "pages": [
+    {
+      "page": "001",
+      "start": 0.0,
+      "panels": ["p01", "p02"],
+      "panel_overrides": {
+        "p01": {
+          "cam_from": [0.50, 0.46, 1.02],
+          "cam_to": [0.50, 0.52, 1.12],
+          "zones": [
+            { "driver": "face", "cx": 0.52, "cy": 0.36, "rx": 0.16, "ry": 0.14 },
+            { "driver": "breathe_l", "cx": 0.46, "cy": 0.62, "rx": 0.14, "ry": 0.12 }
+          ]
+        },
+        "p02": {
+          "start": { "anchor": "B:t1@2", "offset": -0.15 },
+          "weight": 1.3,
+          "visible_bubbles": ["b01", "b02"],
+          "transition": "slide_left"
+        }
+      }
+    },
+    {
+      "page": "002",
+      "start": { "anchor": "A:t1@3", "offset": -0.12 },
+      "panel_overrides": {
+        "p01": {
+          "show_bubbles": false,
+          "drip": { "pos": [0.48, 0.42], "rate": 0.6 },
+          "burst_fluid": false
+        }
+      }
+    }
+  ],
+  "bursts": [
+    {
+      "at": { "anchor": "sfx:rain_splash", "index": 0, "offset": 0.0 },
+      "strength": 0.8
+    }
+  ]
+}

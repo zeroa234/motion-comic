@@ -1,0 +1,23 @@
+{
+  "version": "v1-hybrid",
+  "mode": "hybrid",
+  "out": "output/ep01-v1-hybrid.mp4",
+  "shots": {
+    "001:p02": {
+      "renderer": "video_clip",
+      "fallback": "fast_25d",
+      "clip_path": "clips/001_p02_loop.mp4",
+      "video_loop": "seamless_loop",
+      "video_desaturate": 0.0,
+      "video_sharpen": 0.10
+    },
+    "002:p01": {
+      "renderer": "video_clip",
+      "fallback": "fast_25d",
+      "clip_path": "clips/002_p01_burst.mp4",
+      "video_loop": "xfade_loop",
+      "video_desaturate": 0.0,
+      "allow_fluid_on_video": false
+    }
+  }
+}
