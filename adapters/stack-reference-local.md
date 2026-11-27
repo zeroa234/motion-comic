@@ -77,6 +77,12 @@ python -m src.motion_comic enhance i2v \
   --prompt "gentle tears rolling down cheeks, hair swaying in wind, preserving original warm watercolor palette" \
   --megapixels 0.5 --timeout 480
 
+# 4d. 说话特写精准对口型 → 单首帧 + 真实台词音频锚定（I2V + Audio Guide，按真实时长向上取整生成，渲染配 video_loop="clamp" 1:1 原速正放）
+python -m src.motion_comic enhance i2v \
+  --image <panel_clean.png> --audio <shot_dialogue.wav> --duration 7 --out <clip_lipsync.mp4> \
+  --prompt "speaking excitedly in sync with every syllable and pause of the dialogue, closing mouth cleanly during silence, Static Shot" \
+  --megapixels 0.5 --timeout 480
+
 # 5. L1 注入 enhanced-spec.json 生成混合版 story.json，渲染并通过 L3 质检
 python -m src.motion_comic story \
   --page-map <page-map.json> \
